@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_main"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.example.weatherproject.ui.home.HomeFragment"
+        android:label="fragment_home"
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_homeFragment_to_futureFragment"
+            app:destination="@id/futureFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/futureFragment"
+        android:name="com.example.weatherproject.ui.future.FutureFragment"
+        android:label="fragment_future"
+        tools:layout="@layout/fragment_future" >
+        <argument
+            android:name="lat"
+            app:argType="string" />
+        <argument
+            android:name="lon"
+            app:argType="string" />
+    </fragment>
+</navigation>

@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">weather_app</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="location">Shiraz</string>
+    <string name="descWeather">Mostly Cloudy</string>
+    <string name="temp">29°</string>
+    <string name="tempHL">H: 30° L: 22°</string>
+    <string name="rainVal">22%</string>
+    <string name="rainTxt">Rain</string>
+    <string name="windSpeedVal">12 km/h</string>
+    <string name="windSpeedTxt">Wind Speed</string>
+    <string name="humidityVal">18%</string>
+    <string name="humidityTxt">Humidity</string>
+    <string name="todayTxt">Today</string>
+    <string name="next_7_day"><![CDATA[Next 7 Day >]]></string>
+    <string name="sunset">Sunset</string>
+    <string name="sunrise">Sunrise</string>
+    <string name="tomorrow">Tomorrow</string>
+</resources>
