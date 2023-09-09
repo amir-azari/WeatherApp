@@ -95,7 +95,9 @@ dependencies {
     //Swipe refresh
     implementation ("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
     implementation ("pub.devrel:easypermissions:3.0.0")
-}0
+    //DataStore
+    implementation ("androidx.datastore:datastore-preferences:1.0.0")
+}
 kapt {
     correctErrorTypes = true
 }

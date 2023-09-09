@@ -52,7 +52,7 @@ class FutureFragment : Fragment() {
             val lat = args.lat
             val lon = args.lon
 
-            val timeZone : Int
+            val timeZone: Int
 
             viewModel.loadTomorrowWeather(lat, lon)
             viewModel.tomorrowWeatherData.observe(viewLifecycleOwner) {

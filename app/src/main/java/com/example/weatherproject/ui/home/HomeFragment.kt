@@ -17,15 +17,22 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.coroutineScope
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.weatherproject.R
 import com.example.weatherproject.databinding.FragmentHomeBinding
+import com.example.weatherproject.ui.future.FutureFragmentArgs
 import com.example.weatherproject.utils.MyResponse
+import com.example.weatherproject.utils.StoreLocationData
 import com.example.weatherproject.utils.formatDate
 import com.example.weatherproject.utils.setupRecyclerView
 import com.example.weatherproject.viewmodel.HomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -38,10 +45,16 @@ class HomeFragment : Fragment() {
     @Inject
     lateinit var adapter: HourlyWeatherAdapter
 
+    @Inject
+    lateinit var storeLocationData: StoreLocationData
+
     //Other
     private val viewModel: HomeViewModel by viewModels()
     private var isMainLoading = true
     private var isTodayWeatherLoading = true
+    private val args: HomeFragmentArgs by navArgs()
+
+
     //location
     private lateinit var locationManager: LocationManager
 
@@ -58,20 +71,20 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        var lat = args.lat.toDouble()
+        var lon = args.lon.toDouble()
+        Toast.makeText(requireContext(), "${args.lat} $lon", Toast.LENGTH_SHORT).show()
         //init view
         binding.apply {
-            var timeZone: Int = 0
-            //init latitude , longitude
-            var lat = 0.0
-            var lon = 0.0
 
+            var timeZone: Int = 0
             //check lat and lon
             if (lat == 0.0 && lon == 0.0) {
                 homeDisLay.visibility = View.VISIBLE
                 mainView.visibility = View.GONE
-            }else {
-                homeDisLay.visibility = View.GONE
-                mainView.visibility = View.VISIBLE
+            } else {
+                viewModel.loadCurrentWeatherById(lat.toString(), lon.toString())
+                
             }
 
             //init online lat and lon
@@ -79,6 +92,12 @@ class HomeFragment : Fragment() {
                 override fun onLocationChanged(location: Location) {
                     lat = location.latitude
                     lon = location.longitude
+
+                    lifecycle.coroutineScope.launchWhenCreated {
+                        if (lat != 0.0 && lon != 0.0)
+                            storeLocationData.saveLocation(lat, lon)
+                    }
+
 
                     viewModel.loadCurrentWeatherById(lat.toString(), lon.toString())
 
@@ -91,6 +110,7 @@ class HomeFragment : Fragment() {
             swipeRefreshLayout.setOnRefreshListener {
                 mainView.visibility = View.GONE
                 requestLocationUpdates(locationListener)
+
             }
 
             //Fetch Data
