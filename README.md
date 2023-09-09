@@ -1,13 +1,11 @@
 <h1 align="center">Weather App</h1>
 
-WeatherApp is a sample Android project using The [movies api](https://moviesapi.ir/) based on MVVM architecture. It showcases the latest Android tech stacks with well-designed architecture and best practices.
+WeatherApp is a sample Android project using The [Weather api](openweathermap.org) based on MVVM architecture. It showcases the latest Android tech stacks with well-designed architecture and best practices.
 
 
 <div align="center">
     <img src="https://s6.uupload.ir/files/screenshot_20230908-134426_weather_app_2356.png" width="220">
     <img src="https://s6.uupload.ir/files/screenshot_20230908-134441_weather_app_tfp1.png"  width="220"  />
-
-    
 </div>
 
 
