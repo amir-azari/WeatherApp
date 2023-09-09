@@ -35,14 +35,14 @@ class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
 
     //injection
-
     @Inject
     lateinit var adapter: HourlyWeatherAdapter
 
     //Other
     private val viewModel: HomeViewModel by viewModels()
     private var isMainLoading = true
-    private var isNextWeatherLoading = true
+    private var isTodayWeatherLoading = true
+    //location
     private lateinit var locationManager: LocationManager
 
     override fun onCreateView(
@@ -58,18 +58,28 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
+        //init view
         binding.apply {
-
-
+            var timeZone: Int = 0
+            //init latitude , longitude
             var lat = 0.0
             var lon = 0.0
 
-            var timeZone: Int = 0
+            //check lat and lon
+            if (lat == 0.0 && lon == 0.0) {
+                homeDisLay.visibility = View.VISIBLE
+                mainView.visibility = View.GONE
+            }else {
+                homeDisLay.visibility = View.GONE
+                mainView.visibility = View.VISIBLE
+            }
+
+            //init online lat and lon
             val locationListener = object : LocationListener {
                 override fun onLocationChanged(location: Location) {
                     lat = location.latitude
                     lon = location.longitude
+
                     viewModel.loadCurrentWeatherById(lat.toString(), lon.toString())
 
                     locationManager.removeUpdates(this)
@@ -77,28 +87,25 @@ class HomeFragment : Fragment() {
                 }
 
             }
-
+            //update lat and lon
             swipeRefreshLayout.setOnRefreshListener {
                 mainView.visibility = View.GONE
                 requestLocationUpdates(locationListener)
             }
 
-            requestLocationUpdates(locationListener)
-
-
             //Fetch Data
             viewModel.currentWeatherData.observe(viewLifecycleOwner) {
                 when (it.status) {
                     MyResponse.Status.LOADING -> {
+                        homeDisLay.visibility = View.GONE
                         loading.visibility = View.VISIBLE
                         mainView.visibility = View.GONE
                     }
 
                     MyResponse.Status.SUCCESS -> {
+                        homeDisLay.visibility = View.GONE
                         timeZone = it.data?.timezone!!
-
                         val weatherData = it.data
-
                         locationTxt.text = weatherData.name
                         dateTxt.text = weatherData.dt?.formatDate("E MMM dd | hh:mm a", timeZone)
                         descTxt.text = weatherData.weather?.getOrNull(0)?.description.toString()
@@ -131,9 +138,10 @@ class HomeFragment : Fragment() {
                     }
 
                     MyResponse.Status.ERROR -> {
+                        homeDisLay.visibility = View.GONE
                         isMainLoading = false
                         updateLoadingState()
-                        Toast.makeText(requireContext(), "error1", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
                     }
                 }
             }
@@ -154,16 +162,15 @@ class HomeFragment : Fragment() {
                             ),
                             adapter
                         )
-                        isNextWeatherLoading = false
+                        isTodayWeatherLoading = false
                         updateLoadingState()
 
                     }
 
                     MyResponse.Status.ERROR -> {
-                        isNextWeatherLoading = false
+                        isTodayWeatherLoading = false
                         updateLoadingState()
                         Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
-                        Log.e("TAGMessage", "onViewCreated: ${it.message}")
                     }
                 }
             }
@@ -182,7 +189,7 @@ class HomeFragment : Fragment() {
 
     private fun updateLoadingState() {
         binding.apply {
-            if (!isMainLoading && !isNextWeatherLoading) {
+            if (!isMainLoading && !isTodayWeatherLoading) {
 
                 swipeRefreshLayout.isRefreshing = false
                 loading.visibility = View.GONE
