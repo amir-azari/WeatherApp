@@ -42,15 +42,8 @@ class SplashFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        lifecycle.coroutineScope.launch(Dispatchers.IO){
-
-        }
-
-
         lifecycle.coroutineScope.launch {
             storeLocationData.getLocation().collect{(lat , lon) ->
-
-                Log.d("TAG check lat lon", "onViewCreated: $lat , $lon")
                 if (lat != 0.0 && lon != 0.0){
                     latValue = lat!!
                     lonValue = lon!!
@@ -64,7 +57,6 @@ class SplashFragment : Fragment() {
                 val direction = SplashFragmentDirections.actionSplashFragmentToHomeFragment(latValue.toString() , lonValue.toString())
                 findNavController().navigate(direction)
             }
-
 
         }
 
